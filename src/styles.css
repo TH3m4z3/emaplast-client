@@ -429,7 +429,12 @@ tr.is-on { background: #eef4fb; }
 
 @media (max-width: 1100px) {
   .container { width: calc(100% - 32px); }
-  .header-bar { gap: 8px; height: 60px; }
+  .site-header {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: visible;
+  }
+  .header-bar { gap: 8px; height: 60px; overflow: visible; }
   .brand-logo.is-compact { height: 32px; max-width: 132px; }
   .header-quote { display: none; }
   .menu-btn { display: flex; }
@@ -437,13 +442,13 @@ tr.is-on { background: #eef4fb; }
   .menu-btn.is-open span:nth-child(2) { opacity: 0; }
   .menu-btn.is-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
   .menu-btn span { transition: transform 160ms ease, opacity 160ms ease; }
-  html.nav-open, html.nav-open body { overflow: hidden; }
+  html.nav-open, html.nav-open body { overflow: hidden; height: 100%; }
   .nav-scrim {
     position: fixed;
-    inset: 60px 0 0 0;
+    inset: 0;
     border: 0;
-    background: rgba(7, 36, 74, 0.35);
-    z-index: 30;
+    background: rgba(7, 36, 74, 0.4);
+    z-index: 45;
   }
   .main-nav {
     display: none;
@@ -451,35 +456,39 @@ tr.is-on { background: #eef4fb; }
     left: 0;
     right: 0;
     top: 60px;
-    bottom: 0;
-    z-index: 40;
+    width: 100%;
+    height: calc(100dvh - 60px);
+    height: calc(100vh - 60px);
+    z-index: 50;
     background: #fff;
-    padding: 8px 16px 28px;
+    padding: 12px 16px 32px;
     flex-direction: column;
     align-items: stretch;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .main-nav.is-open { display: flex; gap: 4px; }
+  .main-nav.is-open { display: flex; gap: 6px; }
   .main-nav > a, .nav-item > a {
     height: auto;
+    min-height: 44px;
     width: 100%;
-    padding: 12px 10px;
+    padding: 10px 10px;
     border-radius: 10px;
   }
-  .nav-item { width: 100%; }
+  .nav-item { width: 100%; flex: 0 0 auto; }
   .main-nav.is-open .mega {
-    display: grid;
-    gap: 2px;
+    display: grid !important;
+    gap: 0;
     position: static;
     min-width: 0;
     max-height: none;
     overflow: visible;
     box-shadow: none;
     border: 0;
-    padding: 0 0 10px 14px;
+    padding: 0 0 8px 12px;
     background: transparent;
   }
+  .main-nav.is-open .mega a { padding: 8px 10px; }
   .nav-cta { display: inline-flex; margin: 16px 8px 8px; width: calc(100% - 16px); }
   .hero-inner { padding: 88px 0 48px; }
   .hero h1 { font-size: clamp(1.85rem, 8vw, 2.6rem); max-width: 12ch; }
