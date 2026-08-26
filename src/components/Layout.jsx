@@ -117,21 +117,9 @@ export default function Layout({ settings = {} }) {
 }
 
 function Mega({ to, label, links, onNavigate }) {
-  const [open, setOpen] = useState(true);
   return (
-    <div className={`nav-item ${open ? "is-open" : ""}`}>
-      <div className="nav-item-row">
-        <Link to={to} onClick={onNavigate}>{label}</Link>
-        <button
-          className="nav-toggle"
-          type="button"
-          aria-label={label}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? "−" : "+"}
-        </button>
-      </div>
+    <div className="nav-item">
+      <Link to={to} onClick={onNavigate}>{label}</Link>
       <div className="mega">
         {links.map(([label2, href]) => (
           <Link key={href} to={href} onClick={onNavigate}>{label2}</Link>
