@@ -489,7 +489,8 @@ tr.is-on { background: #eef4fb; }
     cursor: pointer;
   }
   .mega {
-    display: none;
+    display: grid;
+    gap: 2px;
     position: static;
     min-width: 0;
     max-height: none;
@@ -497,7 +498,7 @@ tr.is-on { background: #eef4fb; }
     border: 0;
     padding: 0 8px 12px 18px;
   }
-  .nav-item.is-open .mega { display: grid; gap: 2px; }
+  .nav-item.is-open .mega { display: grid; }
   .nav-cta { display: inline-flex; margin: 16px 8px 8px; width: calc(100% - 16px); }
   .hero-inner { padding: 88px 0 48px; }
   .hero h1 { font-size: clamp(1.85rem, 8vw, 2.6rem); max-width: 12ch; }

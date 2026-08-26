@@ -18,13 +18,17 @@ export default function Layout({ settings = {} }) {
   const tr = (k) => t(lang, k);
   const p = (path) => `/${lang}${path}`;
   const s = (key) => settings?.[key]?.[lang] || settings?.[key]?.fr || "";
+  const liveProducts = (products || []).filter((item) => item.status === "published");
   const comingSoon = (products || []).some((item) => item.status === "coming_soon");
   const productLinks = [
     [tr("allPallets"), p("/products")],
     [tr("findPallet"), p("/products/find")],
     [tr("compare"), p("/products/compare")],
-    ["1200 × 800 mm", p("/products?dimension=1200x800")],
-    ["1200 × 1000 mm", p("/products?dimension=1200x1000")],
+    ...[...new Set((products || []).map((item) => item.dimension).filter(Boolean))].map((d) => [
+      d.replace("x", " × ") + " mm",
+      p(`/products?dimension=${d}`),
+    ]),
+    ...liveProducts.map((item) => [item.sku, p(`/products/${item.slug}`)]),
     ...(comingSoon ? [[tr("futureRefs"), p("/products?status=coming_soon")]] : []),
   ];
   const sectorLinks = [
@@ -113,7 +117,7 @@ export default function Layout({ settings = {} }) {
 }
 
 function Mega({ to, label, links, onNavigate }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <div className={`nav-item ${open ? "is-open" : ""}`}>
       <div className="nav-item-row">
