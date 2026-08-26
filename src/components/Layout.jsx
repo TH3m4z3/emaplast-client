@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
@@ -13,7 +13,6 @@ export default function Layout({ settings = {} }) {
     return () => document.documentElement.classList.remove("nav-open");
   }, [open]);
   const close = () => setOpen(false);
-  const touchX = useRef(null);
   const { data: products } = useFetch("/api/products");
   const { data: sectors } = useFetch("/api/sectors");
   const tr = (k) => t(lang, k);
@@ -78,19 +77,9 @@ export default function Layout({ settings = {} }) {
         </div>
       </header>
       {open && <button className="nav-scrim" type="button" aria-label="Close" onClick={close} />}
-      <nav
-        className={`nav-drawer ${open ? "is-open" : ""}`}
-        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
-        onTouchEnd={(e) => {
-          if (touchX.current == null) return;
-          if (e.changedTouches[0].clientX - touchX.current > 50) close();
-          touchX.current = null;
-        }}
-      >
-        <div className="nav-drawer-scroll">{menus}</div>
-        <div className="nav-drawer-foot">
-          <Link className="btn btn-primary nav-cta" to={p("/quote")} onClick={close}>{lang === "fr" ? "Devis" : "Quote"}</Link>
-        </div>
+      <nav className={`nav-drawer ${open ? "is-open" : ""}`}>
+        {menus}
+        <Link className="btn btn-primary nav-cta" to={p("/quote")} onClick={close}>{lang === "fr" ? "Devis" : "Quote"}</Link>
       </nav>
       <main><Outlet /></main>
       <footer className="site-footer">
