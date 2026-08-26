@@ -22,7 +22,7 @@ export default function Products() {
   const use = params.get("use") || "";
   const status = params.get("status") || "";
   const qs = params.toString();
-  const { data } = useFetch(`/api/products${qs ? `?${qs}` : ""}`);
+  const { data, err } = useFetch(`/api/products${qs ? `?${qs}` : ""}`);
   const uses = t(lang, "uses");
 
   function setFilter(key, value) {
@@ -79,6 +79,7 @@ export default function Products() {
         </div>
       </div>
 
+      {err && <p className="error">{lang === "fr" ? "Impossible de charger les produits." : "Could not load products."} {err}</p>}
       <div className="grid grid-3">
         {(data || []).map((p) => <ProductCard key={p.id} p={p} lang={lang} />)}
       </div>

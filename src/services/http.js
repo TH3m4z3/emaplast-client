@@ -1,5 +1,18 @@
 const TOKEN_KEY = "emaplast_admin_token";
-export const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+
+function resolveApiBase() {
+  const fromEnv = String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  if (typeof window === "undefined") return "";
+  const { hostname, protocol } = window.location;
+  if (hostname === "localhost" || hostname === "127.0.0.1") return "";
+  if (hostname.includes("-client.")) {
+    return `${protocol}//${hostname.replace("-client.", "-server.")}`;
+  }
+  return "";
+}
+
+export const API_BASE = resolveApiBase();
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);

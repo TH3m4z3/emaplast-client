@@ -6,13 +6,14 @@ import { tField } from "../services/http.js";
 
 export default function Sectors() {
   const lang = useLang();
-  const { data } = useFetch("/api/sectors");
+  const { data, err } = useFetch("/api/sectors");
   return (
     <div className="container section">
       <header className="page-hero">
         <p className="kicker">{t(lang, "navSectors")}</p>
         <h1 className="display">{lang === "fr" ? "Des palettes adaptées à chaque métier" : "Pallets tailored to each industry"}</h1>
       </header>
+      {err && <p className="error">{lang === "fr" ? "Impossible de charger les secteurs." : "Could not load sectors."} {err}</p>}
       <div className="grid grid-3">
         {(data || []).map((s) => (
           <Link className="card sector-card" key={s.id} to={`/${lang}/sectors/${s.slug}`}>
