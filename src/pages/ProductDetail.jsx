@@ -3,7 +3,7 @@ import { useLang } from "../hooks/useLang.js";
 import { useFetch } from "../hooks/useFetch.js";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
-import { mediaUrl } from "../utils/image.js";
+import SafeImg from "../components/SafeImg.jsx";
 
 export default function ProductDetail() {
   const lang = useLang();
@@ -14,7 +14,7 @@ export default function ProductDetail() {
     <div className="container section">
       <div className="grid grid-2">
         <div className="card product-hero-card">
-          <img src={mediaUrl(p.image_url)} alt={p.sku} />
+          <SafeImg src={p.image_url} alt={p.sku} />
         </div>
         <div>
           {p.status === "coming_soon" && <span className="badge">{t(lang, "comingSoon")}</span>}

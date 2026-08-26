@@ -4,6 +4,7 @@ import { useFetch } from "../hooks/useFetch.js";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
 import ProductCard from "../components/ProductCard.jsx";
+import SafeImg from "../components/SafeImg.jsx";
 
 export default function SectorDetail() {
   const lang = useLang();
@@ -17,7 +18,7 @@ export default function SectorDetail() {
       <header className="page-hero">
         <h1 className="display">{tField(s, lang, "title")}</h1>
       </header>
-      {s.image_url ? <img className="sector-hero" src={s.image_url} alt="" /> : null}
+      {s.image_url ? <SafeImg className="sector-hero" src={s.image_url} alt="" /> : null}
       <article className="journey-block">
         <h2>1. {t(lang, "challenges")}</h2>
         <ul>{(challenges || []).map((c) => <li key={c}>{c}</li>)}</ul>

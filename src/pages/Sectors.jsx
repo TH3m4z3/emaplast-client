@@ -3,6 +3,7 @@ import { useLang } from "../hooks/useLang.js";
 import { useFetch } from "../hooks/useFetch.js";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
+import SafeImg from "../components/SafeImg.jsx";
 
 export default function Sectors() {
   const lang = useLang();
@@ -17,7 +18,7 @@ export default function Sectors() {
       <div className="grid grid-3">
         {(data || []).map((s) => (
           <Link className="card sector-card" key={s.id} to={`/${lang}/sectors/${s.slug}`}>
-            {s.image_url ? <img className="sector-thumb" src={s.image_url} alt="" /> : null}
+            {s.image_url ? <SafeImg className="sector-thumb" src={s.image_url} alt="" /> : null}
             <h3>{tField(s, lang, "title")}</h3>
             <p className="muted">{tField(s, lang, "excerpt")}</p>
             <span className="link-arrow">{lang === "fr" ? "Explorer" : "Explore"} →</span>

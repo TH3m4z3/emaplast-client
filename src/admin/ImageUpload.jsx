@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { adminService } from "../services/admin.service.js";
+import { mediaUrl } from "../utils/image.js";
 
 export default function ImageUpload({ value, onChange, label = "Image", keepDropzone = false }) {
   const [busy, setBusy] = useState(false);
@@ -29,7 +30,7 @@ export default function ImageUpload({ value, onChange, label = "Image", keepDrop
       <p className="chip-label">{label}</p>
       {value && !keepDropzone ? (
         <div className="upload-preview">
-          <img src={value} alt="" />
+          <img src={mediaUrl(value)} alt="" />
           <div className="row-actions">
             <label className="btn btn-small">
               Remplacer

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { adminService } from "../services/admin.service.js";
 import ImageUpload from "./ImageUpload.jsx";
+import SafeImg from "../components/SafeImg.jsx";
 
 const USES = [
   ["lightweight-export", "Légères et export"],
@@ -124,7 +125,7 @@ export default function ProductEditor() {
         <tbody>
           {visible.map((r) => (
             <tr key={r.id} className={edit?.id === r.id ? "is-on" : ""}>
-              <td>{r.image_url ? <img className="thumb" src={r.image_url} alt="" /> : "—"}</td>
+              <td>{r.image_url ? <SafeImg className="thumb" src={r.image_url} alt="" /> : "—"}</td>
               <td>{r.sku}</td>
               <td>{r.title_fr}</td>
               <td>{r.dimension?.replace("x", " × ")}</td>
