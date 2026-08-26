@@ -20,3 +20,18 @@ npm run dev
 Vite proxies `/api`, `/uploads`, and `/images` to `http://localhost:4000`.
 
 To point at another API, set `VITE_API_URL` in `.env` (see `.env.example`).
+
+## Deploy on Render (Static Site)
+
+| Field | Value |
+|---|---|
+| **Build Command** | `npm install && npm run build` |
+| **Publish Directory** | `dist` |
+
+Environment:
+
+```
+VITE_API_URL=https://YOUR-API.onrender.com
+```
+
+No start command — a static site only needs the build.
