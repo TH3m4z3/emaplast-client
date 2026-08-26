@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
@@ -13,6 +13,7 @@ export default function Layout({ settings = {} }) {
     return () => document.documentElement.classList.remove("nav-open");
   }, [open]);
   const close = () => setOpen(false);
+  const touchX = useRef(null);
   const { data: products } = useFetch("/api/products");
   const { data: sectors } = useFetch("/api/sectors");
   const tr = (k) => t(lang, k);
@@ -36,6 +37,26 @@ export default function Layout({ settings = {} }) {
     ...(sectors || []).map((item) => [tField(item, lang, "title"), p(`/sectors/${item.slug}`)]),
   ];
 
+  const menus = (
+    <>
+      <Mega label={tr("navProducts")} to={p("/products")} links={productLinks} onNavigate={close} />
+      <Mega label={tr("navSectors")} to={p("/sectors")} links={sectorLinks} onNavigate={close} />
+      <Mega label={tr("navSmart")} to={p("/smart-logistics")} links={[
+        [lang === "fr" ? "Présentation" : "Overview", p("/smart-logistics")],
+        ["RFID UHF", p("/smart-logistics/palettes-rfid")],
+        ["RTIM", p("/smart-logistics/rtim")],
+        [lang === "fr" ? "Gestion de parcs" : "Fleet management", p("/smart-logistics/gestion-parcs")],
+      ]} onNavigate={close} />
+      <Mega label={tr("navReborn")} to={p("/reborn")} links={[
+        [lang === "fr" ? "Le programme" : "The programme", p("/reborn")],
+        [tr("cycle"), p("/reborn/cycle")],
+        [lang === "fr" ? "Reprise" : "Take-back", p("/reborn/reprise")],
+      ]} onNavigate={close} />
+      <NavLink to={p("/company/qui-sommes-nous")} onClick={close}>{tr("navCompany")}</NavLink>
+      <NavLink to={p("/contact")} onClick={close}>{tr("contact")}</NavLink>
+    </>
+  );
+
   return (
     <div className="site">
       <header className="site-header">
@@ -43,25 +64,7 @@ export default function Layout({ settings = {} }) {
           <Link className="logo-link" to={p("")} onClick={close}>
             <Logo compact />
           </Link>
-          {open && <button className="nav-scrim" type="button" aria-label="Close" onClick={close} />}
-          <nav className={`main-nav ${open ? "is-open" : ""}`}>
-            <Mega label={tr("navProducts")} to={p("/products")} links={productLinks} onNavigate={close} />
-            <Mega label={tr("navSectors")} to={p("/sectors")} links={sectorLinks} onNavigate={close} />
-            <Mega label={tr("navSmart")} to={p("/smart-logistics")} links={[
-              [lang === "fr" ? "Présentation" : "Overview", p("/smart-logistics")],
-              ["RFID UHF", p("/smart-logistics/palettes-rfid")],
-              ["RTIM", p("/smart-logistics/rtim")],
-              [lang === "fr" ? "Gestion de parcs" : "Fleet management", p("/smart-logistics/gestion-parcs")],
-            ]} onNavigate={close} />
-            <Mega label={tr("navReborn")} to={p("/reborn")} links={[
-              [lang === "fr" ? "Le programme" : "The programme", p("/reborn")],
-              [tr("cycle"), p("/reborn/cycle")],
-              [lang === "fr" ? "Reprise" : "Take-back", p("/reborn/reprise")],
-            ]} onNavigate={close} />
-            <NavLink to={p("/company/qui-sommes-nous")} onClick={close}>{tr("navCompany")}</NavLink>
-            <NavLink to={p("/contact")} onClick={close}>{tr("contact")}</NavLink>
-            <Link className="btn btn-primary nav-cta" to={p("/quote")} onClick={close}>{lang === "fr" ? "Devis" : "Quote"}</Link>
-          </nav>
+          <nav className="main-nav">{menus}</nav>
           <div className="header-actions">
             <div className="lang-switch">
               <Link className={lang === "fr" ? "active" : ""} to={swapLang("fr")}>FR</Link>
@@ -74,6 +77,21 @@ export default function Layout({ settings = {} }) {
           </div>
         </div>
       </header>
+      {open && <button className="nav-scrim" type="button" aria-label="Close" onClick={close} />}
+      <nav
+        className={`nav-drawer ${open ? "is-open" : ""}`}
+        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          if (touchX.current == null) return;
+          if (e.changedTouches[0].clientX - touchX.current > 50) close();
+          touchX.current = null;
+        }}
+      >
+        <div className="nav-drawer-scroll">{menus}</div>
+        <div className="nav-drawer-foot">
+          <Link className="btn btn-primary nav-cta" to={p("/quote")} onClick={close}>{lang === "fr" ? "Devis" : "Quote"}</Link>
+        </div>
+      </nav>
       <main><Outlet /></main>
       <footer className="site-footer">
         <div className="container footer-grid">
