@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { t } from "../i18n.js";
 import { tField } from "../services/http.js";
@@ -8,6 +8,11 @@ import Logo from "./Logo.jsx";
 export default function Layout({ settings = {} }) {
   const { lang = "fr" } = useParams();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    document.documentElement.classList.toggle("nav-open", open);
+    return () => document.documentElement.classList.remove("nav-open");
+  }, [open]);
+  const close = () => setOpen(false);
   const { data: products } = useFetch("/api/products");
   const { data: sectors } = useFetch("/api/sectors");
   const tr = (k) => t(lang, k);
@@ -35,33 +40,35 @@ export default function Layout({ settings = {} }) {
     <div className="site">
       <header className="site-header">
         <div className="container header-bar">
-          <Link className="logo-link" to={p("")} onClick={() => setOpen(false)}>
+          <Link className="logo-link" to={p("")} onClick={close}>
             <Logo compact />
           </Link>
+          {open && <button className="nav-scrim" type="button" aria-label="Close" onClick={close} />}
           <nav className={`main-nav ${open ? "is-open" : ""}`}>
-            <Mega label={tr("navProducts")} to={p("/products")} links={productLinks} />
-            <Mega label={tr("navSectors")} to={p("/sectors")} links={sectorLinks} />
+            <Mega label={tr("navProducts")} to={p("/products")} links={productLinks} onNavigate={close} />
+            <Mega label={tr("navSectors")} to={p("/sectors")} links={sectorLinks} onNavigate={close} />
             <Mega label={tr("navSmart")} to={p("/smart-logistics")} links={[
               [lang === "fr" ? "Présentation" : "Overview", p("/smart-logistics")],
               ["RFID UHF", p("/smart-logistics/palettes-rfid")],
               ["RTIM", p("/smart-logistics/rtim")],
               [lang === "fr" ? "Gestion de parcs" : "Fleet management", p("/smart-logistics/gestion-parcs")],
-            ]} />
+            ]} onNavigate={close} />
             <Mega label={tr("navReborn")} to={p("/reborn")} links={[
               [lang === "fr" ? "Le programme" : "The programme", p("/reborn")],
               [tr("cycle"), p("/reborn/cycle")],
               [lang === "fr" ? "Reprise" : "Take-back", p("/reborn/reprise")],
-            ]} />
-            <NavLink to={p("/company/qui-sommes-nous")}>{tr("navCompany")}</NavLink>
-            <NavLink to={p("/contact")}>{tr("contact")}</NavLink>
+            ]} onNavigate={close} />
+            <NavLink to={p("/company/qui-sommes-nous")} onClick={close}>{tr("navCompany")}</NavLink>
+            <NavLink to={p("/contact")} onClick={close}>{tr("contact")}</NavLink>
+            <Link className="btn btn-primary nav-cta" to={p("/quote")} onClick={close}>{lang === "fr" ? "Devis" : "Quote"}</Link>
           </nav>
           <div className="header-actions">
             <div className="lang-switch">
               <Link className={lang === "fr" ? "active" : ""} to={swapLang("fr")}>FR</Link>
               <Link className={lang === "en" ? "active" : ""} to={swapLang("en")}>EN</Link>
             </div>
-            <Link className="btn btn-primary" to={p("/quote")}>{lang === "fr" ? "Devis" : "Quote"}</Link>
-            <button className="menu-btn" type="button" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
+            <Link className="btn btn-primary header-quote" to={p("/quote")}>{lang === "fr" ? "Devis" : "Quote"}</Link>
+            <button className={`menu-btn ${open ? "is-open" : ""}`} type="button" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
               <span /><span /><span />
             </button>
           </div>
@@ -109,12 +116,14 @@ export default function Layout({ settings = {} }) {
   );
 }
 
-function Mega({ to, label, links }) {
+function Mega({ to, label, links, onNavigate }) {
   return (
     <div className="nav-item">
-      <Link to={to}>{label}</Link>
+      <Link to={to} onClick={onNavigate}>{label}</Link>
       <div className="mega">
-        {links.map(([label2, href]) => <Link key={href} to={href}>{label2}</Link>)}
+        {links.map(([label2, href]) => (
+          <Link key={href} to={href} onClick={onNavigate}>{label2}</Link>
+        ))}
       </div>
     </div>
   );
