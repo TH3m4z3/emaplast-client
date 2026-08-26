@@ -35,3 +35,9 @@ VITE_API_URL=https://YOUR-API.onrender.com
 ```
 No start command — a static site only needs the build.
 
+If a refresh on `/fr/products` returns 404, add this rewrite in Render → **Redirects/Rewrites**:
+
+| Source | Destination | Action |
+|---|---|---|
+| `/*` | `/index.html` | Rewrite |
+
